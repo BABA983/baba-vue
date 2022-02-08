@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Vue 1.0</title>
+  </head>
+
+  <body>
+    <div id="app">
+      <h3>数据响应式更新 原理</h3>
+      <div>{{ str }}</div>
+      <div>{{ student }}</div>
+      <div>{{ arr }}</div>
+      <h3>methods + 事件 + 数据响应式更新 原理</h3>
+      <div>
+        <p>{{ counter }}</p>
+        <button v-on:click="handleAdd">Add</button>
+        <button v-on:click="handleMinus">Minus</button>
+      </div>
+      <h3>v-bind</h3>
+      <span v-bind:title="title">右键审查元素查看我的 title 属性</span>
+      <h3>v-model 原理</h3>
+      <div>
+        <input type="text" v-model="inputVal" />
+        <div>{{ inputVal }}</div>
+      </div>
+      <div>
+        <input type="checkbox" v-model="isChecked" />
+        <div>{{ isChecked }}</div>
+      </div>
+      <div>
+        <select v-model="selectValue">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+        <div>{{ selectValue }}</div>
+      </div>
+    </div>
+    <script type="module">
+      import Vue from './src/index.js';
+      const ins = new Vue({
+        el: '#app',
+        data() {
+          return {
+            // 原始值和对象的响应式原理
+            str: 'str',
+            student: {
+              name: 'jason',
+            },
+            // 数组的响应式原理
+            arr: [1, 2, 3],
+            // 响应式更新
+            counter: 0,
+            // v-bind
+            title: '看我',
+            // v-model
+            inputVal: 'test',
+            isChecked: true,
+            selectValue: 2,
+          };
+        },
+        // methods + 事件 + 数据响应式更新 原理
+        methods: {
+          handleAdd() {
+            this.counter++;
+          },
+          handleMinus() {
+            this.counter--;
+          },
+        },
+      });
+      // 数据响应式拦截
+      setTimeout(() => {
+        console.log(
+          '********** 属性值为原始值时的 getter、setter ************'
+        );
+        console.log(ins.str);
+        ins.str = 'change str value';
+        console.log(ins.str);
+      }, 1000);
+
+      setTimeout(() => {
+        console.log('********** 属性的新值为对象的情况 ************');
+        ins.str = {
+          value: 'new str value',
+        };
+        console.log(ins.str.value);
+      }, 2000);
+
+      setTimeout(() => {
+        console.log(
+          '********** 验证对深层属性的 getter、setter 拦截 ************'
+        );
+        ins.student.name = 'jack';
+        console.log(ins.student.name);
+      }, 3000);
+
+      setTimeout(() => {
+        console.log('********** 将值为对象的属性更新为原始值 ************');
+        console.log(ins.student);
+        ins.student = 'student value change from Object to String';
+        console.log(ins.student);
+      }, 4000);
+
+      setTimeout(() => {
+        console.log('********** 数组操作方法的拦截 ************');
+        console.log(ins.arr);
+        ins.arr.push(4);
+        console.log(ins.arr);
+      }, 5000);
+
+      console.log(document.querySelector('#app').outerHTML);
+      console.log(document.querySelector('#app').innerHTML);
+    </script>
+  </body>
+</html>

